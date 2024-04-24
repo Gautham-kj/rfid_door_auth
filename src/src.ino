@@ -15,9 +15,6 @@ Servo servo;
 
 byte nuidPICC[4] = {115, 205, 84, 5};
 
-void doorAuthenticated();
-void doorNotAuthenticated();
-
 void setup()
 {
     Serial.begin(9600);
@@ -65,6 +62,28 @@ void loop()
     rfid.PCD_StopCrypto1();
 }
 
+void doorAuthenticated()
+{
+    Serial.println(F("Access Granted\n Door Opening"));
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(500);
+    digitalWrite(BUZZER_PIN, LOW);
+    servo.write(180);
+    delay(DOOR_OPEN_TIME);
+    servo.write(0);
+}
+
+void doorNotAuthenticated()
+{
+    Serial.println(F("Access Denied. Try Again"));
+    for (int i = 0; i < 4; i++)
+    {
+        digitalWrite(BUZZER_PIN, HIGH);
+        delay(200);
+        digitalWrite(BUZZER_PIN, LOW);
+        delay(200);
+    }
+}
 
 
 bool nuidAuthenticator(byte stored[], byte scanned[], int size)
